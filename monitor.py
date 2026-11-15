@@ -9,14 +9,14 @@ from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 
-INTERVAL_SECONDS = 60
+INTERVAL_SECONDS = 15 * 60
 CHECK_TIMEOUT_SECONDS = 75
 TIMEZONE = ZoneInfo("Europe/Berlin")
 ROOT = Path(__file__).resolve().parent
 
 
 def next_mark(moment: datetime) -> datetime:
-    """Next HH:MM:00 in Berlin. A moment already on the mark waits one full interval."""
+    """Next 15-minute mark in Berlin (:00, :15, :30, or :45). A moment already on the mark waits one full interval."""
     stamp = moment.timestamp()
     nxt = (int(stamp) // INTERVAL_SECONDS + 1) * INTERVAL_SECONDS
     return datetime.fromtimestamp(nxt, TIMEZONE)
@@ -98,7 +98,7 @@ def run() -> None:
     require_telegram_env()
     keep_awake()
     print(
-        "Heilbronn ABH monitor started. Checks are locked to second 00 of every minute. Press Ctrl+C to stop.",
+        "Heilbronn ABH monitor started. Checks run every 15 minutes, at :00, :15, :30, and :45. Press Ctrl+C to stop.",
         flush=True,
     )
     failures = 0
@@ -125,7 +125,7 @@ def run() -> None:
             reason = "waiting after an error"
         else:
             deadline = next_mark(now)
-            reason = "exact minute"
+            reason = "every 15 minutes"
         delay = max(0.0, (deadline - datetime.now(TIMEZONE)).total_seconds())
         print(
             f"Next check: {deadline:%H:%M:%S} ({reason}, {delay:.0f} seconds).",
@@ -134,7 +134,7 @@ def run() -> None:
         late = sleep_until(deadline)
         if late > 2:
             print(
-                f"Started {late:.0f} seconds late. The next successful check locks back to the exact minute.",
+                f"Started {late:.0f} seconds late. The next successful check locks back to the 15-minute mark.",
                 flush=True,
             )
 

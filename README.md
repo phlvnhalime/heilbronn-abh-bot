@@ -1,6 +1,6 @@
 # Heilbronn ABH appointment alert
 
-A watcher that runs on your own computer. Every minute it opens the [Heilbronn immigration office appointment page](https://www.etermin.net/qtermin-stadtheilbronn-abh). When a new earlier time appears for **Verlängerung Aufenthaltserlaubnis**, it sends you a Telegram message.
+A watcher that runs on your own computer. Every 15 minutes it opens the [Heilbronn immigration office appointment page](https://www.etermin.net/qtermin-stadtheilbronn-abh). When a new earlier time appears for **Verlängerung Aufenthaltserlaubnis**, it sends you a Telegram message.
 
 > [!IMPORTANT]
 > This tool is intended for personal use and only monitors publicly available appointment information.
@@ -115,7 +115,7 @@ In the same folder, with the environment still active:
 python monitor.py
 ```
 
-The program then checks the page at second `:00` of every minute. Stop it with `Ctrl+C` in that window.
+The program then checks the page every 15 minutes, at :00, :15, :30, and :45. Stop it with `Ctrl+C` in that window.
 
 The first successful check does not send an appointment message. It saves the earliest time it sees as the starting point. A message is sent later only when a time appears that is earlier than that saved time and has not been seen before.
 
@@ -124,16 +124,16 @@ The record is stored in `appointment_state.json`. That file is not uploaded to G
 ## What the screen shows
 
 ```text
-Check: 15.11.2026 15:10:00
+Check: 15.11.2026 15:00:00
 Earliest visible time: 2027-05-12 08:50 (43 slots)
 No new earlier appointment. No alert sent.
-Next check: 15:11:00 (exact minute, 53 seconds).
+Next check: 15:15:00 (every 15 minutes, 895 seconds).
 ```
 
-- `Check` is the moment the check started. Successful checks stay locked to second `:00` of each minute.
+- `Check` is the moment the check started. Successful checks run at :00, :15, :30, and :45.
 - `Earliest visible time` is the earliest appointment found on the page. The number in parentheses is how many times were read on that check.
 - `No alert sent` means there is no new time earlier than the saved earliest time.
-- `Next check` is the clock time of the next check. The seconds beside it are the time left until that minute after the page has finished loading.
+- `Next check` is the clock time of the next check. The seconds beside it are the time left until that 15-minute mark after the page has finished loading.
 
 When an earlier time is found, the terminal prints `Telegram alert sent.` and your phone receives a message like this:
 
@@ -151,8 +151,8 @@ https://www.etermin.net/qtermin-stadtheilbronn-abh
 - `.env must contain TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID`: step 5 is missing.
 - `test_telegram.py` fails and you never see `Telegram message sent.`: the token or chat id is wrong, or you never messaged the bot.
 - The same date stays on screen for hours: the page has no earlier time. The program is still working.
-- `Check did not finish within 75 seconds and was stopped`: that check got stuck and was stopped. The next minute tries again.
-- If the computer slept, a check can be skipped. After it wakes, checking continues at the next exact minute.
+- `Check did not finish within 75 seconds and was stopped`: that check got stuck and was stopped. The next check tries again.
+- If the computer slept, a check can be skipped. After it wakes, checking continues at the next 15-minute mark.
 
 ## What stays private
 
