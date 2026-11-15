@@ -2,6 +2,13 @@
 
 A watcher that runs on your own computer. Every minute it opens the [Heilbronn immigration office appointment page](https://www.etermin.net/qtermin-stadtheilbronn-abh). When a new earlier time appears for **Verlängerung Aufenthaltserlaubnis**, it sends you a Telegram message.
 
+> [!IMPORTANT]
+> This tool is intended for personal use and only monitors publicly available appointment information.
+>
+> It does not automatically book appointments.
+>
+> Please respect the website's terms of use and avoid excessive requests.
+
 It does not book the appointment, fill in a form, or send personal data. When the message arrives, you open the page and book the appointment yourself.
 
 Someone else can do the same thing: copy this repository to their own GitHub account, create their own Telegram bot, and follow the steps below on their own computer.
