@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+appointment_state.json
+appointment_state.json.tmp
+.DS_Store
